@@ -1,0 +1,40 @@
+{
+  "extends": "@vue/tsconfig/tsconfig.json",
+  "compilerOptions": {
+    // 1. 压制 TS 6.0 弃用警告（baseUrl 等）
+    "ignoreDeprecations": "6.0",
+    // 2. 覆盖 moduleResolution，适配 Vite
+    "moduleResolution": "bundler",
+    // 3. 替代旧导入选项
+    "verbatimModuleSyntax": true,
+    "importsNotUsedAsValues": "remove",
+    "preserveValueImports": false,
+  
+
+    "allowJs": true,
+    "sourceMap": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "lib": ["esnext", "dom"],
+    "types": [
+      "@dcloudio/types", // uni-app API 类型
+      "miniprogram-api-typings", // 原生微信小程序类型
+      "@uni-helper/uni-app-types", // uni-app 组件类型
+      "@uni-helper/uni-ui-types" // uni-ui 组件类型  
+    ]
+  },
+  
+   // vue 编译器类型，校验标签类型
+   "vueCompilerOptions": {
+    // 1. 指定 Vue 版本（必须）
+    "target": 3,
+    
+    // 2. 引用 @uni-helper/uni-app-types 内置的 Volar 插件
+    //    自动处理 uni-app 标签识别，替代原 nativeTags
+    "plugins": ["@uni-helper/uni-app-types/volar-plugin"]
+  },
+
+  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"]
+}
