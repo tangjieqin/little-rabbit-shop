@@ -12,34 +12,38 @@ export interface MemberInfo {
   // 其他字段...
 }
 
+/**
+ * 用户会员状态管理store
+ * 使用Pinia进行状态管理，提供会员信息的读取、更新和持久化功能
+ */
 export const useUserMemberStore = defineStore(
   'userMember',
   () => {
     // 2. 使用具体类型替代 any，并设置合理的初始值
-    const member = ref<MemberInfo | null>(null)
+    const profile = ref<MemberInfo | null>(null)
 
     // 3. 添加 getter：是否登录
-    const isLogin = computed(() => !!member.value?.token)
+    const isLogin = computed(() => !!profile.value?.token)
 
     // 4. 保存会员信息（登录）
     const setProfile = (info: MemberInfo) => {
-      member.value = info
+      profile.value = info
     }
 
     // 5. 更新部分字段（可选）
     const updateProfile = (partial: Partial<MemberInfo>) => {
-      if (member.value) {
-        member.value = { ...member.value, ...partial }
+      if (profile.value) {
+        profile.value = { ...profile.value, ...partial }
       }
     }
 
     // 6. 清除会员信息（登出）
     const clearProfile = () => {
-      member.value = null
+      profile.value = null
     }
 
     return {
-      member, // 改为 member，更简洁
+      profile, // 改为 member，更简洁
       isLogin,
       setProfile,
       updateProfile,
