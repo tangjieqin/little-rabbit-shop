@@ -29,7 +29,7 @@ import { onMounted, ref } from 'vue'
 
 // 定义分页参数
 const pageParams: Required<PageParams> = {
-  page: 30,
+  page: 1,
   pageSize: 10,
 }
 
@@ -54,6 +54,13 @@ const getHomeGoodsGuessLikeData = async () => {
   }
 }
 
+// 重置数据
+const resetData = () => {
+  pageParams.page = 1
+  guessList.value = []
+  finish.value = false
+}
+
 // 组件挂在完毕
 onMounted(() => {
   getHomeGoodsGuessLikeData()
@@ -62,6 +69,7 @@ onMounted(() => {
 // 暴露方法给父组件使用
 defineExpose({
   getMore: getHomeGoodsGuessLikeData,
+  resetData,
 })
 </script>
 

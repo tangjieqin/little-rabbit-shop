@@ -2,7 +2,14 @@
   <!-- 自定义导航栏 -->
   <CustomNavbar />
   <!-- 保持自定义导航栏不动，其他的可以上下滑动 -->
-  <scroll-view @scrolltolower="onScrolttolower" class="scroll-view" scroll-y>
+  <scroll-view
+    refresher-enabled
+    @refresherrefresh="onRefresherrefresh"
+    :refresher-triggered="isTriggered"
+    @scrolltolower="onScrolttolower"
+    class="scroll-view"
+    scroll-y
+  >
     <!-- 自定义轮播图 -->
     <XtxSwiper :list="bannerList" />
     <!-- 分类面板 -->
@@ -58,6 +65,26 @@ const xtxGuessRef = ref<XtxGuessInstance>()
 // 滚动到底部加载更多数据
 const onScrolttolower = () => {
   xtxGuessRef.value?.getMore()
+}
+
+// 下拉刷新
+const isTriggered = ref(false)
+const onRefresherrefresh = async () => {
+  // 开启动画
+  isTriggered.value = true
+  // await getHomeBannerData()
+  // await getHomeCategoryData()
+  // await getHomeHotData()
+  // 等待数据加载完后关闭动画
+  xtxGuessRef.value?.resetData()
+  await Promise.all([
+    getHomeBannerData(),
+    getHomeCategoryData(),
+    getHomeHotData(),
+    xtxGuessRef.value?.getMore(),
+  ])
+  // 关闭动画
+  isTriggered.value = false
 }
 </script>
 
