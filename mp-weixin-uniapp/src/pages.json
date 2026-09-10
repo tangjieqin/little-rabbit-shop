@@ -50,6 +50,12 @@
 			"style": {
 				"navigationBarTitleText": "PageSkeleton"
 			}
+		},
+		{
+			"path": "pages/hot/hot",
+			"style": {
+				"navigationBarTitleText": "hot"
+			}
 		}
 	],
 	"globalStyle": {
