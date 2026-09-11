@@ -23,6 +23,7 @@
       v-show="activeIndex === index"
       scroll-y
       class="scroll-view"
+      @scrolltolower="onScrolltolower"
     >
       <view class="goods">
         <navigator
@@ -40,7 +41,7 @@
           </view>
         </navigator>
       </view>
-      <view class="loading-text">正在加载...</view>
+      <view class="loading-text">{{ item.finish ? '没有更多数据了~' : '正在加载...' }}</view>
     </scroll-view>
   </view>
 </template>
@@ -69,13 +70,16 @@ uni.setNavigationBarTitle({
 
 // 推荐的封面
 const bannerPicture = ref('')
-const subTypes = ref<SubTypeItem[]>()
+const subTypes = ref<(SubTypeItem & { finish?: boolean })[]>()
 // 高亮的下表
 const activeIndex = ref(0)
 
 // 动态获取推荐页的数据
 const getHotRecommendData = async () => {
-  const res = await getHotRecommendAPI(currentUrlMap!.url)
+  const res = await getHotRecommendAPI(currentUrlMap!.url, {
+    page: 30,
+    pageSize: 10,
+  })
   bannerPicture.value = res.result.bannerPicture
   subTypes.value = res.result.subTypes
 }
@@ -83,6 +87,34 @@ const getHotRecommendData = async () => {
 onLoad(() => {
   getHotRecommendData()
 })
+
+// 滚动触底触发的页面更新的方法
+const onScrolltolower = async () => {
+  // 获取选项和页面内容
+  const currentSubTypes = subTypes.value![activeIndex.value]
+  // 分页条件
+  if (currentSubTypes.goodsItems.page < currentSubTypes.goodsItems.pages) {
+    currentSubTypes.goodsItems.page++
+  } else {
+    // 数据结束了
+    currentSubTypes.finish = true
+    return uni.showToast({
+      icon: 'none',
+      title: '没有更多数据了~',
+    })
+  }
+
+  // 重新获取数据
+  const res = await getHotRecommendAPI(currentUrlMap!.url, {
+    subType: currentSubTypes.id,
+    page: currentSubTypes.goodsItems.page,
+    pageSize: currentSubTypes.goodsItems.pageSize,
+  })
+  // 新的列表选项
+  const newSubTypes = res.result.subTypes[activeIndex.value]
+  // 将数据追加到页面内容中
+  currentSubTypes.goodsItems.items.push(...newSubTypes.goodsItems.items)
+}
 </script>
 
 <style lang="scss">
