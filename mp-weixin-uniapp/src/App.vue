@@ -12,5 +12,5 @@ onHide(() => {
 </script>
 <style lang="scss">
 // 字体图标
-@import '@/styles/fonts.scss';
+@use '@/styles/fonts.scss';
 </style>
